@@ -149,6 +149,7 @@ class UM31:
                 for val in row[3:]:
                     val = val.split()
                     data_dict[val[0]] = round(float(val[1]), 1)
+
                 full_dict.update({"meterUUID": "todo",
                                   "meterDescription": meter_description,
                                   "transmittedAt": transmitted_at,
@@ -164,6 +165,7 @@ class UM31:
                 for val in row[2:]:
                     val = val.split()
                     data_dict[val[0]] = round(float(val[1]), 1)
+
                 full_dict.update({"meterUUID": "todo",
                                   "meterDescription": meter_description,
                                   "transmittedAt": transmitted_at,
