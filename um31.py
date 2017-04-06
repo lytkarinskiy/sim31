@@ -152,7 +152,7 @@ class UM31:
                 md = md.split(";")
                 print(md)
                 sn = row[1].split()[1]
-                md = self.__dev_dict[format(md[3], "02d")] \
+                md = self.__dev_dict["0"+md[3]] \
                      + " with ID" + md[0] + "/" + md[1] \
                      + " , S/N" + sn \
                      + " at " + self.__bus_dict[md[2]]
