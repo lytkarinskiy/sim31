@@ -150,11 +150,12 @@ class UM31:
                 # Format meterDescription
                 md = row[0].split()[1]
                 md = md.split(";")
+                print(md)
                 sn = row[1].split()[1]
                 md = self.__dev_dict[md[3]] \
                      + " with ID" + md[0] + "/" + md[1] \
-                     + " , S/N" + sn #\
-                     #+ " at " + self.__bus_dict[str(md[2])]
+                     + " , S/N" + sn \
+                     + " at " + self.__bus_dict[md[2]]
                 # Format values
                 dd = OrderedDict([("_spec", "Mercury")])
                 for val in row[2:]:
