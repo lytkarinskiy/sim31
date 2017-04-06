@@ -164,7 +164,7 @@ class UM31:
                     d.append(json.dumps(full_dict, indent=4))
                 else:
                     pass
-        elif key.startswith("READMONTH")
+        elif key.startswith("READMONTH"):
             for row in data:
                 if len(row) > 1:
                     # Format time
