@@ -115,10 +115,8 @@ class UM31:
         data = self.clean_data(data)
         d = []
         for row in data:
-            if "SNUM" in row:
-                row_list = re.split(r" DT |ID |SNUM |A\+[0-2] ", row)[1:]
-                # Format transmittedAt
-                tm = row_list[0].strip()
+            if "DT" in row[0] and len(row) > 2:
+                tm = row[0].split()[1]
                 if tm.endswith("2"):
                     tm = datetime.datetime.strptime(tm, "%d.%m.%Y %H:%M:%S 2")
                     td = datetime.timedelta(hours=-3)
@@ -127,18 +125,19 @@ class UM31:
                 else:
                     tm = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
                 # Format meterDescription
-                md = row_list[1].strip()
+                md = row[1].split()[1]
                 md = md.split(";")
-                sn = row_list[2].strip()
+                sn = row[2].split()[1]
                 md = self.__dev_dict[md[3]] \
                      + " with ID" + md[0] + "/" + md[1] \
                      + " , S/N" + sn \
                      + " at " + self.__bus_dict[md[2]]
 
-                dd = OrderedDict([("_spec", "Mercury"),
-                                  ("T0", round(float(row_list[3]), 1)),
-                                  ("T1", round(float(row_list[4]), 1)),
-                                  ("T2", round(float(row_list[5]), 1))])
+                # Format values
+                dd = OrderedDict([("_spec", "Mercury")])
+                for val in row[3:]:
+                    val = val.split()
+                    dd[val[0]] = round(float( val[1]), 1)
 
                 od = OrderedDict([("meterUUID", "todo"),
                                   ("meterDescription", md),
