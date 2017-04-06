@@ -12,3 +12,11 @@ with open("data.txt", "wb") as f:
 dat2 = um.export_json(data)
 for i in dat2:
     print(i)
+
+
+
+
+import um31
+um = um31.UM31()
+dat = open("data.txt", "rb").read()
+dat2 = um.export_json(dat)
