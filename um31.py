@@ -144,7 +144,7 @@ class UM31:
                 for val in row[3:]:
                     val = val.split()
                     dd[val[0]] = round(float(val[1]), 1)
-                od.update({"meterUUID": "todo", "meterDescription": md, "transmittedAt": tm})
+                od.update({"meterUUID": "todo", "meterDescription": md, "transmittedAt": tm, "data": dd})
                 d.append(json.dumps(od, indent=4))
 
             elif "ID" in row[0] and len(row) > 1:
@@ -163,7 +163,7 @@ class UM31:
                 for val in row[2:]:
                     val = val.split()
                     dd[val[0]] = round(float(val[1]), 1)
-                od.update({"meterUUID": "todo", "meterDescription": md, "transmittedAt": tm})
+                od.update({"meterUUID": "todo", "meterDescription": md, "transmittedAt": tm, "data": dd})
                 d.append(json.dumps(od, indent=4))
             else:
                 pass
