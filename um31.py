@@ -112,8 +112,15 @@ class UM31:
             return None
 
     def export_json(self, data):
+
         data = self.clean_data(data)
         d = []
+        dd = OrderedDict([("_spec", "Mercury")])
+        od = OrderedDict([("meterUUID", None),
+                          ("meterDescription", None),
+                          ("transmittedAt", None),
+                          ("data", None)])
+
         for row in data:
             if "DT" in row[0] and len(row) > 2:
                 # Format time
@@ -130,20 +137,16 @@ class UM31:
                 md = md.split(";")
                 sn = row[2].split()[1]
                 md = self.__dev_dict[md[3]] \
-                     + " with ID" + md[0] + "/" + md[1] \
-                     + " , S/N" + sn \
-                     + " at " + self.__bus_dict[md[2]]
+                     + ", ID=" + md[0] + "/" + md[1] \
+                     + ", S/N=" + sn \
+                     + ", bus=" + self.__bus_dict[md[2]]
                 # Format values
-                dd = OrderedDict([("_spec", "Mercury")])
                 for val in row[3:]:
                     val = val.split()
                     dd[val[0]] = round(float(val[1]), 1)
-
-                od = OrderedDict([("meterUUID", "todo"),
-                                  ("meterDescription", md),
-                                  ("transmittedAt", tm),
-                                  ("data", dd)])
+                od.update({"meterUUID": "todo", "meterDescription": md, "transmittedAt": tm})
                 d.append(json.dumps(od, indent=4))
+
             elif "ID" in row[0] and len(row) > 1:
                 # Format time
                 tm = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -153,19 +156,14 @@ class UM31:
                 print(md)
                 sn = row[1].split()[1]
                 md = self.__dev_dict["0"+md[3]] \
-                     + " with ID" + md[0] + "/" + md[1] \
-                     + " , S/N" + sn \
-                     + " at " + self.__bus_dict[md[2]]
+                     + ", ID=" + md[0] + "/" + md[1] \
+                     + ", S/N=" + sn \
+                     + ", bus=" + self.__bus_dict[md[2]]
                 # Format values
-                dd = OrderedDict([("_spec", "Mercury")])
                 for val in row[2:]:
                     val = val.split()
                     dd[val[0]] = round(float(val[1]), 1)
-
-                od = OrderedDict([("meterUUID", "todo"),
-                                  ("meterDescription", md),
-                                  ("transmittedAt", tm),
-                                  ("data", dd)])
+                od.update({"meterUUID": "todo", "meterDescription": md, "transmittedAt": tm})
                 d.append(json.dumps(od, indent=4))
             else:
                 pass
