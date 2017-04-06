@@ -4,7 +4,7 @@ um = um31.UM31()
 um.connect("/dev/ttyUSB0")
 # data = um.read_current_values()
 
-data = um.read_month_values(2)
+data = um.read_month_values(3)
 
 with open("data.txt", "wb") as f:
     f.write(data)
