@@ -142,8 +142,9 @@ class UM31:
             for row in data:
                 if len(row) > 2:
                     # Format time
-                    transmitted_at = row[0].split()[1]
-                    if transmitted_at.endswith("2"):
+                    splited_time_row = row[0].split()
+                    transmitted_at = splited_time_row[1]
+                    if splited_time_row[2] == "2":
                         transmitted_at = datetime.strptime(transmitted_at, "%d.%m.%Y %H:%M:%S 2")
                         time_delta = timedelta(hours=-3)
                         transmitted_at = transmitted_at + time_delta
