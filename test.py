@@ -8,3 +8,5 @@ with open("data.txt", "wb") as f:
     f.write(data)
 
 dat2 = um.clean_data(data)
+for i in dat2:
+    print(dat2)
