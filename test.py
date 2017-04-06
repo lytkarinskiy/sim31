@@ -9,3 +9,11 @@ with open("data.txt", "wb") as f:
 
 for i in um.export_json(data):
     print(i)
+
+
+import um31
+um = um31.UM31()
+dat =open("data.txt", "rb").read()
+dat2 = um.clean_data(dat)
+dat2
+

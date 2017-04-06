@@ -108,12 +108,15 @@ class UM31:
             for i in inter4:
                 inter5.append(list(filter(lambda elem: elem.strip(), re.split("<", i))))
             return inter5[1:]
-        # elif inter0.startswith("READMONTH"):
-        #     inter1 = re.sub(r"[\s<]", " ", inter0)
-        #     inter2 = re.sub(r"END(.*?)(BL|READMONTHEND)", " ", inter1)
-        #     inter3 = re.sub(r"END.+", "", inter2)
-        #     inter4 = re.split("=", " ".join(inter3.split()))
-        #     return inter4[1:]
+        elif inter0.startswith("READMONTH"):
+            inter1 = re.sub(r"[\s]", " ", inter0)
+            inter2 = re.sub(r"END(.*?)(BL|READMONTHEND)", " ", inter1)
+            inter3 = re.sub(r"END.+", "", inter2)
+            inter4 = re.split("=", " ".join(inter3.split()))
+            inter5 = []
+            for i in inter4:
+                inter5.append(list(filter(lambda elem: elem.strip(), re.split("<", i))))
+            return inter5[1:]
         else:
             return None
 
