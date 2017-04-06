@@ -100,17 +100,20 @@ class UM31:
     def clean_data(self, data):
         inter0 = data.decode("utf-8", "ignore")
         if inter0.startswith("READCURR"):
-            inter1 = re.sub(r"[\s<\x00-\x1f]", " ", inter0)
+            inter1 = re.sub(r"[\s]", " ", inter0)
             inter2 = re.sub(r"END(.*?)(BL|READCURREND)", " ", inter1)
             inter3 = re.sub(r"END.+", "", inter2)
             inter4 = re.split("=", " ".join(inter3.split()))
-            return inter4[1:]
-        elif inter0.startswith("READMONTH"):
-            inter1 = re.sub(r"[\s<\x00-\x1f]", " ", inter0)
-            inter2 = re.sub(r"END(.*?)(BL|READCURREND)", " ", inter1)
-            inter3 = re.sub(r"END.+", "", inter2)
-            inter4 = re.split("=", " ".join(inter3.split()))
-            return inter4[1:]
+            inter5 = []
+            for i in inter4:
+                inter5.append(list(filter(lambda elem: elem.strip(), re.split("<", i))))
+            return inter5[1:]
+        # elif inter0.startswith("READMONTH"):
+        #     inter1 = re.sub(r"[\s<]", " ", inter0)
+        #     inter2 = re.sub(r"END(.*?)(BL|READMONTHEND)", " ", inter1)
+        #     inter3 = re.sub(r"END.+", "", inter2)
+        #     inter4 = re.split("=", " ".join(inter3.split()))
+        #     return inter4[1:]
         else:
             return None
 
