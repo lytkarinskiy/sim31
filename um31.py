@@ -143,8 +143,8 @@ class UM31:
                 if len(row) > 2:
                     # Format time
                     splited_time_row = row[0].split()
-                    transmitted_at = splited_time_row[1]
-                    if splited_time_row[2] == "2":
+                    transmitted_at = splited_time_row[1] + " " + splited_time_row[2]
+                    if splited_time_row[3] == "2":
                         transmitted_at = datetime.strptime(transmitted_at, "%d.%m.%Y %H:%M:%S 2")
                         time_delta = timedelta(hours=-3)
                         transmitted_at = transmitted_at + time_delta
