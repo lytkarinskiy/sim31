@@ -107,7 +107,7 @@ class UM31:
             inter5 = []
             for i in inter4:
                 inter5.append(list(filter(lambda elem: elem.strip(), re.split("<", i))))
-            return inter5[0], inter5[2:]
+            return inter5[0][0], inter5[2:]
         else:
             return None
 
