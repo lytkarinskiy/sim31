@@ -97,7 +97,7 @@ class UM31:
         """
         return self.__execute_cmd("READMONTH=" + format(month, "02d"), "READMONTHEND")
 
-    def clean_data(self, data):
+    def _clean_data(self, data):
         inter0 = data.decode("utf-8", "ignore")
         if inter0.startswith("READ"):
             inter1 = re.sub(r"[\s]", " ", inter0)
@@ -107,7 +107,7 @@ class UM31:
             inter5 = []
             for i in inter4:
                 inter5.append(list(filter(lambda elem: elem.strip(), re.split("<", i))))
-            return inter5[2:]
+            return inter5[0], inter5[2:]
         else:
             return None
 
@@ -117,13 +117,18 @@ class UM31:
             md = id_.split()[1]
             md = md.split(";")
             sn = sn_.split()[1]
-            md = self.__dev_dict[md[3]] \
+            # check dev_dict index length and append if necessary (bug in UM31 firmware)
+            dev_index = md[3]
+            if len(dev_index) < 2:
+                dev_index = "0" + dev_index
+            md = self.__dev_dict[dev_index] \
                  + ", ID=" + md[0] + "/" + md[1] \
                  + ", S/N=" + sn \
                  + ", bus=" + self.__bus_dict[md[2]]
             return md
 
-        data = self.clean_data(data)
+        key, data = self._clean_data(data)
+
         d = []
         data_dict = OrderedDict([("_spec", "Mercury")])
         full_dict = OrderedDict([("meterUUID", None),
@@ -132,47 +137,55 @@ class UM31:
                                  ("data", None)])
 
         time_format = "%Y-%m-%dT%H:%M:%SZ"
-        for row in data:
-            if "DT" in row[0] and len(row) > 2:
-                # Format time
-                transmitted_at = row[0].split()[1]
-                if transmitted_at.endswith("2"):
-                    transmitted_at = datetime.strptime(transmitted_at, "%d.%m.%Y %H:%M:%S 2")
-                    time_delta = timedelta(hours=-3)
-                    transmitted_at = transmitted_at + time_delta
-                    transmitted_at = datetime.strftime(transmitted_at, time_format)
+
+        if key.startswith("READCURR"):
+            for row in data:
+                if len(row) > 2:
+                    # Format time
+                    transmitted_at = row[0].split()[1]
+                    if transmitted_at.endswith("2"):
+                        transmitted_at = datetime.strptime(transmitted_at, "%d.%m.%Y %H:%M:%S 2")
+                        time_delta = timedelta(hours=-3)
+                        transmitted_at = transmitted_at + time_delta
+                        transmitted_at = datetime.strftime(transmitted_at, time_format)
+                    else:
+                        transmitted_at = datetime.utcnow().strftime(time_format)
+                    # Format meterDescription
+                    meter_description = _description_string(row[1], row[2])
+                    # Format values
+                    for val in row[3:]:
+                        val = val.split()
+                        data_dict[val[0]] = round(float(val[1]), 1)
+
+                    full_dict.update({"meterUUID": "todo",
+                                      "meterDescription": meter_description,
+                                      "transmittedAt": transmitted_at,
+                                      "data": data_dict})
+                    d.append(json.dumps(full_dict, indent=4))
                 else:
+                    pass
+        elif key.startswith("READMONTH")
+            for row in data:
+                if len(row) > 1:
+                    # Format time
                     transmitted_at = datetime.utcnow().strftime(time_format)
-                # Format meterDescription
-                meter_description = _description_string(row[1], row[2])
-                # Format values
-                for val in row[3:]:
-                    val = val.split()
-                    data_dict[val[0]] = round(float(val[1]), 1)
+                    # Format meterDescription
+                    meter_description = _description_string(row[0], row[1])
+                    # Format values
+                    for val in row[2:]:
+                        val = val.split()
+                        data_dict[val[0]] = round(float(val[1]), 1)
 
-                full_dict.update({"meterUUID": "todo",
-                                  "meterDescription": meter_description,
-                                  "transmittedAt": transmitted_at,
-                                  "data": data_dict})
-                d.append(json.dumps(full_dict, indent=4))
+                    full_dict.update({"meterUUID": "todo",
+                                      "meterDescription": meter_description,
+                                      "transmittedAt": transmitted_at,
+                                      "data": data_dict})
+                    d.append(json.dumps(full_dict, indent=4))
+                else:
+                    pass
+        else:
+            pass
 
-            elif "ID" in row[0] and len(row) > 1:
-                # Format time
-                transmitted_at = datetime.utcnow().strftime(time_format)
-                # Format meterDescription
-                meter_description = _description_string(row[0], row[1])
-                # Format values
-                for val in row[2:]:
-                    val = val.split()
-                    data_dict[val[0]] = round(float(val[1]), 1)
-
-                full_dict.update({"meterUUID": "todo",
-                                  "meterDescription": meter_description,
-                                  "transmittedAt": transmitted_at,
-                                  "data": data_dict})
-                d.append(json.dumps(full_dict, indent=4))
-            else:
-                pass
         return d
 
     __bus_dict = dict([("0", "CAN1"),
