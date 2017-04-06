@@ -137,7 +137,7 @@ class UM31:
                 dd = OrderedDict([("_spec", "Mercury")])
                 for val in row[3:]:
                     val = val.split()
-                    dd[val[0]] = round(float( val[1]), 1)
+                    dd[val[0]] = round(float(val[1]), 1)
 
                 od = OrderedDict([("meterUUID", "todo"),
                                   ("meterDescription", md),
@@ -192,4 +192,3 @@ class UM31:
                        ("19", "BARS"),
                        ("91", "USPD Mercury 225.2")
                        ])
-
