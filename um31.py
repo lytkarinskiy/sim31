@@ -116,6 +116,7 @@ class UM31:
         d = []
         for row in data:
             if "DT" in row[0] and len(row) > 2:
+                # Format time
                 tm = row[0].split()[1]
                 if tm.endswith("2"):
                     tm = datetime.datetime.strptime(tm, "%d.%m.%Y %H:%M:%S 2")
@@ -132,12 +133,33 @@ class UM31:
                      + " with ID" + md[0] + "/" + md[1] \
                      + " , S/N" + sn \
                      + " at " + self.__bus_dict[md[2]]
-
                 # Format values
                 dd = OrderedDict([("_spec", "Mercury")])
                 for val in row[3:]:
                     val = val.split()
                     dd[val[0]] = round(float( val[1]), 1)
+
+                od = OrderedDict([("meterUUID", "todo"),
+                                  ("meterDescription", md),
+                                  ("transmittedAt", tm),
+                                  ("data", dd)])
+                d.append(json.dumps(od, indent=4))
+            elif "ID" in row[0] and len(row) > 1:
+                # Format time
+                tm = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+                # Format meterDescription
+                md = row[0].split()[1]
+                md = md.split(";")
+                sn = row[1].split()[1]
+                md = self.__dev_dict[md[3]] \
+                     + " with ID" + md[0] + "/" + md[1] \
+                     + " , S/N" + sn \
+                     + " at " + self.__bus_dict[md[2]]
+                # Format values
+                dd = OrderedDict([("_spec", "Mercury")])
+                for val in row[2:]:
+                    val = val.split()
+                    dd[val[0]] = round(float(val[1]), 1)
 
                 od = OrderedDict([("meterUUID", "todo"),
                                   ("meterDescription", md),
