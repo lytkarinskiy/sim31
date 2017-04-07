@@ -98,7 +98,7 @@ class UM31:
         """
         return self.__execute_cmd("READMONTH=" + format(month, "02d"), "READMONTHEND")
 
-    def _clean_data(data):
+    def _clean_data(self, data):
 
         inter0 = data.decode("utf-8", "ignore")
         if inter0.startswith("READ"):
