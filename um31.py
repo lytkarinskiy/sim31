@@ -1,19 +1,18 @@
-"""Class for connection and reading information from UM-31GSM Device"""
-
 import re
 import json
 import time
-from datetime import datetime, timedelta
 import serial
 import crcmod.predefined
+
+from datetime import datetime, timedelta
 from collections import OrderedDict
 
 
 class UM31:
+    """Class for connection and reading information from UM-31GSM Device"""
     def __init__(self):
         self.password = '00000000'
         self.__connection = serial.Serial()
-        self.__crc = crcmod.predefined.mkCrcFun('modbus')
 
     def connect(self,
                 port=None,
@@ -46,21 +45,23 @@ class UM31:
         """Disconnect from UM-31 immediately"""
         self.__connection.close()
 
-    def __pack_command(self, command):
+    def __pack_command(self, cmd_word):
         """Internal function for packing command in desirable format.
 
         Args:
-            command (str): Supported command from documentation.
+            cmd_word (str): Supported command from documentation.
 
         Returns:
             bytes: The return value. Formatted command to write in UM-31.
 
         """
+        crc_func = crcmod.predefined.mkCrcFun('modbus')
         sep = ","
-        command_ = self.password + sep + command
-        crc = self.__crc(command_.encode('utf-8'))
-        full = command_ + format(crc, 'x') + "\x0A\x0A"
-        return full.encode("utf-8")
+
+        cmd_text = self.password + sep + cmd_word
+        crc = crc_func(cmd_text.encode('utf-8'))
+        packed_cmd = cmd_text + format(crc, 'x') + "\x0A\x0A"
+        return packed_cmd.encode("utf-8")
 
     def __execute_cmd(self, cmd_word, stop_word):
         stop_word = stop_word.encode("utf-8")
@@ -97,14 +98,20 @@ class UM31:
         """
         return self.__execute_cmd("READMONTH=" + format(month, "02d"), "READMONTHEND")
 
-    def _clean_data(self, data):
+    def _clean_data(data):
+
         inter0 = data.decode("utf-8", "ignore")
         if inter0.startswith("READ"):
+            # Remove whitespaces
             inter1 = re.sub(r"[\s]", " ", inter0)
+            # Remove CRC and open/close words
             inter2 = re.sub(r"END(.*?)BL", " ", inter1)
+            # Remove last close word
             inter3 = re.sub(r"END.+", "", inter2)
+            # Split to separate measurements at "=" sign
             inter4 = re.split("=", " ".join(inter3.split()))
             inter5 = []
+            # Split each measurement in to list of measurement fields at "<" sign, remove empty fields
             for i in inter4:
                 inter5.append(list(filter(lambda elem: elem.strip(), re.split("<", i))))
             return inter5[0][0], inter5[2:]
