@@ -38,9 +38,3 @@ class UUIDict:
             self.write_dict(self.storage)
         return uuid_string
 
-uuidd = UUIDict()
-
-# uuidd.erase_dict()
-for i in range(100):
-    uuidd.get_uuid(str(i))
-
