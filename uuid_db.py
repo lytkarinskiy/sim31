@@ -4,9 +4,9 @@ import os
 
 
 class UUIDict:
-    def __init__(self):
+    def __init__(self, db_name="dict.uuid"):
         self.__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        self.db_name = "dict.uuid"
+        self.db_name = db_name
         self.storage = self.read_dict()
 
     def write_dict(self, obj):
