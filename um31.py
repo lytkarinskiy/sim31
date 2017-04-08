@@ -145,8 +145,7 @@ class UM31:
                                  ("data", None)])
 
         time_format = "%Y-%m-%dT%H:%M:%SZ"
-        uuid_dict = uuid_db.UUIDict()
-        uuid_dict.db_name = "um31.uuid"
+        uuid_dict = uuid_db.UUIDict("um31.uuid")
         if key.startswith("READCURR"):
             for row in data:
                 if len(row) > 2:
