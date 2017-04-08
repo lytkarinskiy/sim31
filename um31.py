@@ -3,6 +3,7 @@ import json
 import time
 import serial
 import crcmod.predefined
+import uuid_db
 
 from datetime import datetime, timedelta
 from collections import OrderedDict
@@ -144,7 +145,8 @@ class UM31:
                                  ("data", None)])
 
         time_format = "%Y-%m-%dT%H:%M:%SZ"
-
+        uuid_dict = uuid_db.UUIDict()
+        uuid_dict.db_name = "um31.uuid"
         if key.startswith("READCURR"):
             for row in data:
                 if len(row) > 2:
@@ -166,7 +168,7 @@ class UM31:
                         val = val.split()
                         data_dict[val[0]] = round(float(val[1]), 1)
 
-                    full_dict.update({"meterUUID": "todo",
+                    full_dict.update({"meterUUID": uuid_dict.get_uuid(meter_description),
                                       "meterDescription": meter_description,
                                       "transmittedAt": transmitted_at,
                                       "data": data_dict})
@@ -185,7 +187,7 @@ class UM31:
                         val = val.split()
                         data_dict[val[0]] = round(float(val[1]), 1)
 
-                    full_dict.update({"meterUUID": "todo",
+                    full_dict.update({"meterUUID": uuid_dict.get_uuid(meter_description),
                                       "meterDescription": meter_description,
                                       "transmittedAt": transmitted_at,
                                       "data": data_dict})

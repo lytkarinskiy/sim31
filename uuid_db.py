@@ -40,6 +40,7 @@ class UUIDict:
 
 uuidd = UUIDict()
 
+# uuidd.erase_dict()
 for i in range(100):
     uuidd.get_uuid(str(i))
 
