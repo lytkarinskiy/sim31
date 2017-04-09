@@ -126,11 +126,11 @@ class UM31:
             meter_descr = meter_descr.split(";")
             serial_number = sn_block.split()[1]
             # check dev_dict index length and append if necessary (bug in UM31 firmware)
-            dev_index = meter_descr[3]
-            if len(dev_index) < 2:
-                dev_index = "0" + dev_index
+            dev_index = format(int(meter_descr[3]), "02d")
+            # if len(dev_index) < 2:
+            #     dev_index = "0" + dev_index
             meter_descr = self.__dev_dict[dev_index] \
-                 + ", ID=" + meter_descr[0] + "/" + meter_descr[1] \
+                 + ", ID=" + format(int(meter_descr[0]), "04d") + "/" + format(int(meter_descr[1]), "04d") \
                  + ", S/N=" + serial_number \
                  + ", bus=" + self.__bus_dict[meter_descr[2]]
             return meter_descr
