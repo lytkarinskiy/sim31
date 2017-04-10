@@ -72,6 +72,7 @@ class UM31:
         data = cmd_word.encode("utf-8")
         while True:
             current_line = self.__connection.readline()
+            print(current_line)
             if stop_word not in current_line:
                 data += current_line
             else:
@@ -100,7 +101,16 @@ class UM31:
         return self.__execute_cmd("READMONTH=" + format(month, "02d"), "READMONTHEND")
 
     def _clean_data(self, data):
+        """Clean output data
 
+        Args:
+            data (bytearray): Raw rows from UM-31
+
+        Returns:
+            inter5[0][0] (str): Key raw to determine which command was used to read the data
+            inter5[2:] (list of lists of str): cleaned data separated by TAG (TD, SNUM, etc..)
+
+        """
         inter0 = data.decode("utf-8", "ignore")
         if inter0.startswith("READ"):
             # Remove whitespaces
