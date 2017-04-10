@@ -100,6 +100,9 @@ class UM31:
         """
         return self.__execute_cmd("READMONTH=" + format(month, "02d"), "READMONTHEND")
 
+    def read_diagnostic(self):
+        return self.__execute_cmd("RDIAGN", "END")
+
     def _clean_data(self, data):
         """Clean output data
 
