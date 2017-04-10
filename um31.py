@@ -38,7 +38,9 @@ class UM31:
         self.__connection.parity = parity
         self.__connection.close()
         try:
+            self.__connection.close()
             self.__connection.open()
+            print("Connected to ", port)
         except serial.SerialException:
             print("Can't open connection")
 
