@@ -75,7 +75,7 @@ class UM31:
         data = cmd_word.encode("utf-8")
         while True:
             current_line = self.__connection.readline()
-            print(current_line)
+            # print(current_line)
             if stop_word not in current_line:
                 data += current_line
             else:

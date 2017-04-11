@@ -23,18 +23,18 @@ class UUIDict:
         except OSError:
             self.write_dict(dict())
             f = open(os.path.join(self.__location__, self.db_name), "rb")
-            print("Created empty dict")
+            # print("Created empty dict")
         return pickle.load(f)
 
     def get_uuid(self, key_string):
         try:
             uuid_string = self.storage[key_string]
-            print("Found record", key_string, uuid_string)
+            # print("Found record", key_string, uuid_string)
         except KeyError:
-            print("Didn't find record", key_string)
+            # print("Didn't find record", key_string)
             uuid_string = str(uuid.uuid3(uuid.NAMESPACE_DNS, key_string))
             self.storage[key_string] = uuid_string
-            print("Created new record", key_string, uuid_string)
+            # print("Created new record", key_string, uuid_string)
             self.write_dict(self.storage)
         return uuid_string
 

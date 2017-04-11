@@ -18,7 +18,7 @@ class RestreamClient:
         self.client.tls_insecure_set(True)  # prevents ssl.SSLError: Certificate subject does not match remote hostname.
 
     def _do_publish(self):
-        m = self.client._userdata.pop()
+        m = self._userdata.pop()
         if type(m) is dict:
             topic = m["topic"]
             try:
@@ -37,7 +37,7 @@ class RestreamClient:
             (topic, payload, qos, retain) = m
         else:
             raise ValueError("message must be a dict or a tuple")
-        self.client.publish(topic, payload, qos, retain)
+        self.publish(topic, payload, qos, retain)
         print("Publishing")
 
     # The callback for when the client receives a CONNACK response from the server.
@@ -47,7 +47,7 @@ class RestreamClient:
             if len(userdata) != 0:
                 self._do_publish()
             else:
-                self.client.disconnect()
+                self.disconnect()
         else:
             raise mqtt.MQTTException(paho.connack_string(rc))
 
@@ -56,7 +56,7 @@ class RestreamClient:
     def _on_publish(self, userdata, mid):
         print("mid: " + str(mid))
         if len(userdata) == 0:
-            self.client.disconnect()
+            self.disconnect()
             print("Disconnecting")
         else:
             self._do_publish()
