@@ -21,7 +21,7 @@ class UM31:
                 baudrate=9600,
                 bytesize=serial.EIGHTBITS,
                 parity=serial.PARITY_NONE,
-                password='00000000'):
+                password='00000000', timeout=15):
         """Connect to UM-31 with specified serial port parameters
 
         Args:
@@ -38,6 +38,7 @@ class UM31:
         self.__connection.bytesize = bytesize
         self.__connection.parity = parity
         self.__connection.close()
+        self.__connection.timeout = timeout
         try:
             self.__connection.close()
             self.__connection.open()
@@ -112,6 +113,9 @@ class UM31:
 
         """
         return self.__execute_cmd("RDIAGN", "END")
+
+    def read_ntpserver_list(self, record_num):
+        return self.__execute_cmd(" RNTPSRV" + str(record_num), "None")
 
     def _clean_data(self, data):
         """Clean output data
