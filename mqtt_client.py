@@ -17,8 +17,8 @@ class RestreamClient:
                             tls_version=ssl.PROTOCOL_TLSv1_2)
         self.client.tls_insecure_set(True)  # prevents ssl.SSLError: Certificate subject does not match remote hostname.
 
-    def _do_publish(self):
-        m = self._userdata.pop()
+    def _do_publish(self, client):
+        m = client._userdata.pop()
         if type(m) is dict:
             topic = m["topic"]
             try:
@@ -37,32 +37,32 @@ class RestreamClient:
             (topic, payload, qos, retain) = m
         else:
             raise ValueError("message must be a dict or a tuple")
-        self.publish(topic, payload, qos, retain)
+        client.publish(topic, payload, qos, retain)
         print("Publishing")
 
     # The callback for when the client receives a CONNACK response from the server.
-    def _on_connect(self, userdata, flags, rc):
+    def _on_connect(self, client, userdata, flags, rc):
         print(paho.connack_string(rc))
         if rc == 0:
             if len(userdata) != 0:
-                self._do_publish()
+                self._do_publish(client)
             else:
-                self.disconnect()
+                client.disconnect()
         else:
             raise mqtt.MQTTException(paho.connack_string(rc))
 
     # The callback for when message that was to be sent
     # using the publish() call has completed transmission to the broker.
-    def _on_publish(self, userdata, mid):
+    def _on_publish(self, client, userdata, mid):
         print("mid: " + str(mid))
         if len(userdata) == 0:
-            self.disconnect()
+            client.disconnect()
             print("Disconnecting")
         else:
-            self._do_publish()
+            self._do_publish(client)
 
     # The callback for when the client disconnects from the broker.
-    def _on_disconnect(self, userdata, rc):
+    def _on_disconnect(self, client, userdata, rc):
         if rc != 0:
             print("on_disconnect: Unexpected disconnection")
             print("waiting 60 sec and reconnecting")

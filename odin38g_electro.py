@@ -11,6 +11,7 @@ __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file
 
 mqtt_broker_host = "185.41.113.138"
 mqtt_client_id = "5e9c1178-a5f0-4dc0-bbbc-d74243aab27c"
+topic = "odintcovo38g/electro"
 
 update_rate = 10 * 60
 
@@ -19,7 +20,11 @@ while True:
     um.connect("/dev/ttyUSB0")
     data = um.read_current_values()
     um.disconnect()
-    msg = um.export_json(data)
+
+    payld = um.export_json(data)
+    msg = []
+    for p in payld:
+        msg.append({"topic": topic, "payload": p, "qos": 1})
 
     mqttc = mqtt_client.RestreamClient(mqtt_client_id, msg, __location__)
     mqttc.client.connect(mqtt_broker_host, port=8883, keepalive=60)
