@@ -1,7 +1,7 @@
 import os
 import um31
 import restreamclient
-from apscheduler.schedulers.blocking import BackgroundScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 
 location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 mqtt_broker_host = "185.41.113.138"
