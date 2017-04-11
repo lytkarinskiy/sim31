@@ -67,6 +67,5 @@ class RestreamClient:
             print("waiting 60 sec and reconnecting")
             time.sleep(60)
 
-
     def _on_log(self, client, userdata, level, string):
         print(string)
