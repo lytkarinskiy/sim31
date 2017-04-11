@@ -38,11 +38,11 @@ class RestreamClient:
         else:
             raise ValueError("message must be a dict or a tuple")
         self.client.publish(topic, payload, qos, retain)
-        # print("Publishing")
+        print("Publishing")
 
     # The callback for when the client receives a CONNACK response from the server.
     def _on_connect(self, userdata, flags, rc):
-        # print(paho.connack_string(rc))
+        print(paho.connack_string(rc))
         if rc == 0:
             if len(userdata) != 0:
                 self._do_publish()
@@ -54,7 +54,7 @@ class RestreamClient:
     # The callback for when message that was to be sent
     # using the publish() call has completed transmission to the broker.
     def _on_publish(self, userdata, mid):
-        # print("mid: " + str(mid))
+        print("mid: " + str(mid))
         if len(userdata) == 0:
             self.client.disconnect()
             print("Disconnecting")
