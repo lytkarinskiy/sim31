@@ -68,4 +68,4 @@ class RestreamClient:
             time.sleep(60)
 
     def _on_log(self, client, userdata, level, string):
-        print(string)
+        print("on_log:", string)
