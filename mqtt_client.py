@@ -42,7 +42,7 @@ class RestreamClient:
 
     # The callback for when the client receives a CONNACK response from the server.
     def _on_connect(self, client, userdata, flags, rc):
-        # print(paho.connack_string(rc))
+        print(paho.connack_string(rc))
         if rc == 0:
             if len(userdata) != 0:
                 self._do_publish(client)
