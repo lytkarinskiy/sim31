@@ -38,7 +38,7 @@ class RestreamClient:
         else:
             raise ValueError("message must be a dict or a tuple")
         client.publish(topic, payload, qos, retain)
-        print("Publishing")
+        # print("Publishing")
 
     # The callback for when the client receives a CONNACK response from the server.
     def _on_connect(self, client, userdata, flags, rc):
@@ -54,10 +54,10 @@ class RestreamClient:
     # The callback for when message that was to be sent
     # using the publish() call has completed transmission to the broker.
     def _on_publish(self, client, userdata, mid):
-        print("mid: " + str(mid))
+        # print("mid: " + str(mid))
         if len(userdata) == 0:
             client.disconnect()
-            print("Disconnecting")
+            print("Disconnecting from MQTT broker")
         else:
             self._do_publish(client)
 

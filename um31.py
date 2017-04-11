@@ -153,8 +153,14 @@ class UM31:
 
         key, data = self._clean_data(data)
 
+        def _spec_string(id_block):
+            meter_descr = id_block.split()[1]
+            meter_descr = meter_descr.split(";")
+            dev_index = format(int(meter_descr[3]), "02d")
+            return self.__dev_dict[dev_index]
+
         json_list = []
-        data_dict = OrderedDict([("_spec", "Mercury")])
+        data_dict = OrderedDict([("_spec", None)])
         full_dict = OrderedDict([("meterUUID", None),
                                  ("meterDescription", None),
                                  ("transmittedAt", None),
@@ -183,6 +189,7 @@ class UM31:
                         val = val.split()
                         data_dict[val[0]] = round(float(val[1]), 1)
 
+                    data_dict.update({"_spec" : _spec_string(row[1])})
                     full_dict.update({"meterUUID": uuid_dict.get_uuid(meter_description),
                                       "meterDescription": meter_description,
                                       "transmittedAt": transmitted_at,
@@ -202,6 +209,7 @@ class UM31:
                         val = val.split()
                         data_dict[val[0]] = round(float(val[1]), 1)
 
+                    data_dict.update({"_spec": _spec_string(row[0])})
                     full_dict.update({"meterUUID": uuid_dict.get_uuid(meter_description),
                                       "meterDescription": meter_description,
                                       "transmittedAt": transmitted_at,
