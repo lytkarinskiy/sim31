@@ -18,7 +18,6 @@ def job_function():
     payld = um.export_json(data)
     msg = []
     for p in payld:
-        print(p)
         msg.append({"topic": topic, "payload": p, "qos": 1})
 
     mqttc = mqtt_client.RestreamClient(mqtt_client_id, msg, __location__)
