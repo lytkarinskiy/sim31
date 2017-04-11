@@ -115,7 +115,7 @@ class UM31:
         return self.__execute_cmd("RDIAGN", "END")
 
     def read_ntpserver_list(self, record_num):
-        return self.__execute_cmd(" RNTPSRV" + str(record_num), "None")
+        return self.__execute_cmd(" RNTPSRV=" + str(record_num), "None")
 
     def _clean_data(self, data):
         """Clean output data
