@@ -1,7 +1,7 @@
 import os
 import um31
 import restreamclient
-from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.blocking import BackgroundScheduler
 
 location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 mqtt_broker_host = "185.41.113.138"
@@ -25,7 +25,7 @@ def job_function():
     mqttc.client.loop_forever(retry_first_connection=True)
 
 
-sched = BlockingScheduler()
+sched = BackgroundScheduler()
 sched.add_job(job_function, 'cron', minute='0,10,20,30,40,50')
 
 sched.start()
