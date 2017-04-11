@@ -11,6 +11,7 @@ from collections import OrderedDict
 
 class UM31:
     """Class for connection and reading information from UM-31GSM Device"""
+
     def __init__(self):
         self.__password = '00000000'
         self.__connection = serial.Serial()
@@ -40,7 +41,7 @@ class UM31:
         try:
             self.__connection.close()
             self.__connection.open()
-            print("Connected to ", port)
+            print("Connected to", port, "at", time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()))
         except serial.SerialException:
             print("Can't open connection")
 
@@ -146,9 +147,9 @@ class UM31:
             # if len(dev_index) < 2:
             #     dev_index = "0" + dev_index
             meter_descr = self.__dev_dict[dev_index] \
-                 + ", ID=" + format(int(meter_descr[0]), "04d") + "/" + format(int(meter_descr[1]), "04d") \
-                 + ", S/N=" + serial_number \
-                 + ", bus=" + self.__bus_dict[meter_descr[2]]
+                          + ", ID=" + format(int(meter_descr[0]), "04d") + "/" + format(int(meter_descr[1]), "04d") \
+                          + ", S/N=" + serial_number \
+                          + ", bus=" + self.__bus_dict[meter_descr[2]]
             return meter_descr
 
         key, data = self._clean_data(data)
@@ -189,7 +190,7 @@ class UM31:
                         val = val.split()
                         data_dict[val[0]] = round(float(val[1]), 1)
 
-                    data_dict.update({"_spec" : _spec_string(row[1])})
+                    data_dict.update({"_spec": _spec_string(row[1])})
                     full_dict.update({"meterUUID": uuid_dict.get_uuid(meter_description),
                                       "meterDescription": meter_description,
                                       "transmittedAt": transmitted_at,
