@@ -64,6 +64,7 @@ class UM31:
         cmd_text = self.__password + sep + cmd_word
         crc = crc_func(cmd_text.encode('utf-8'))
         packed_cmd = cmd_text + format(crc, 'x') + "\x0A\x0A"
+        print(packed_cmd)
         return packed_cmd.encode("utf-8")
 
     def __execute_cmd(self, cmd_word, stop_word):
