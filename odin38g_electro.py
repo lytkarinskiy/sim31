@@ -1,4 +1,5 @@
 import os
+import time
 import um31
 import restreamclient
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -24,8 +25,16 @@ def job_function():
     mqttc.client.connect(mqtt_broker_host, port=8883, keepalive=60)
     mqttc.client.loop_forever(retry_first_connection=True)
 
+if __name__ == '__main__':
+    sched = BackgroundScheduler()
+    sched.add_job(job_function, 'cron', minute='0,10,20,30,40,50')
 
-sched = BackgroundScheduler()
-sched.add_job(job_function, 'cron', minute='0,10,20,30,40,50')
+    sched.start()
 
-sched.start()
+    try:
+        # This is here to simulate application activity (which keeps the main thread alive).
+        while True:
+            time.sleep(2)
+    except (KeyboardInterrupt, SystemExit):
+        # Not strictly necessary if daemonic mode is enabled but should be done if possible
+        sched.shutdown()
