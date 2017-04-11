@@ -105,6 +105,12 @@ class UM31:
         return self.__execute_cmd("READMONTH=" + format(month, "02d"), "READMONTHEND")
 
     def read_diagnostic(self):
+        """Read diagnostic data.
+
+        Returns:
+            str: The return value. Unformatted payload from UM-31.
+
+        """
         return self.__execute_cmd("RDIAGN", "END")
 
     def _clean_data(self, data):
@@ -147,7 +153,8 @@ class UM31:
             # if len(dev_index) < 2:
             #     dev_index = "0" + dev_index
             meter_descr = self.__dev_dict[dev_index] \
-                          + ", ID=" + format(int(meter_descr[0]), "04d") + "/" + format(int(meter_descr[1]), "04d") \
+                          + ", ID=" + format(int(meter_descr[0]), "04d") \
+                          + "/" + format(int(meter_descr[1]), "04d") \
                           + ", S/N=" + serial_number \
                           + ", bus=" + self.__bus_dict[meter_descr[2]]
             return meter_descr
