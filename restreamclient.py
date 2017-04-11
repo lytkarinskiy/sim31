@@ -11,7 +11,7 @@ class RestreamClient:
         self.client.on_connect = self._on_connect
         self.client.on_publish = self._on_publish
         self.client.on_disconnect = self._on_disconnect
-        self.client.on_log = self._on_log
+        # self.client.on_log = self._on_log
         self.client.tls_set(ca_certs=os.path.join(cert_location, "ca.crt"),
                             certfile=os.path.join(cert_location, "client_cert.pem"),
                             keyfile=os.path.join(cert_location, "client_key.pem"),
