@@ -37,4 +37,3 @@ class UUIDict:
             # print("Created new record", key_string, uuid_string)
             self.write_dict(self.storage)
         return uuid_string
-
