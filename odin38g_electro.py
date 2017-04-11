@@ -1,6 +1,6 @@
 import os
 import um31
-import mqtt_client
+import restreamclient
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -20,7 +20,7 @@ def job_function():
     for p in payld:
         msg.append({"topic": topic, "payload": p})
 
-    mqttc = mqtt_client.RestreamClient(mqtt_client_id, msg, location)
+    mqttc = restreamclient.RestreamClient(mqtt_client_id, msg, location)
     mqttc.client.connect(mqtt_broker_host, port=8883, keepalive=60)
     mqttc.client.loop_forever(retry_first_connection=True)
 

@@ -3,7 +3,7 @@ import json
 import time
 import serial
 import crcmod.predefined
-import uuid_db
+import uuidict
 
 from datetime import datetime, timedelta
 from collections import OrderedDict
@@ -168,7 +168,7 @@ class UM31:
                                  ("data", None)])
 
         time_format = "%Y-%m-%dT%H:%M:%SZ"
-        uuid_dict = uuid_db.UUIDict("um31.uuid")
+        uuid_dict = uuidict.UUIDict("um31.uuid")
         if key.startswith("READCURR"):
             for row in data:
                 if len(row) > 2:
