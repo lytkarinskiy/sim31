@@ -32,7 +32,7 @@ class UUIDict:
             # print("Found record", key_string, uuid_string)
         except KeyError:
             # print("Didn't find record", key_string)
-            uuid_string = str(uuid.uuid3(uuid.NAMESPACE_DNS, key_string))
+            uuid_string = str(uuid.uuid4())
             self.storage[key_string] = uuid_string
             # print("Created new record", key_string, uuid_string)
             self.write_dict(self.storage)

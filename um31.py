@@ -168,7 +168,7 @@ class UM31:
             return meter_descr
 
         key, data = self._clean_data(data)
-
+        time_format = "%Y-%m-%dT%H:%M:%SZ"
         json_list = []
         data_dict = OrderedDict([("_spec", "electricity_meter")])
         full_dict = OrderedDict([("meterUUID", None),
@@ -176,8 +176,6 @@ class UM31:
                                  ("transmittedAt", None),
                                  ("data", None)])
         info_dict = OrderedDict()
-
-        time_format = "%Y-%m-%dT%H:%M:%SZ"
         uuid_dict = uuidict.UUIDict("um31.uuid")
         if key.startswith("READCURR"):
             for row in data:
