@@ -39,7 +39,6 @@ class UM31:
         self.__connection.baudrate = baudrate
         self.__connection.bytesize = bytesize
         self.__connection.parity = parity
-        self.__connection.close()
         self.__connection.timeout = timeout
         try:
             self.__connection.close()
@@ -176,6 +175,7 @@ class UM31:
                                  ("meterDescription", None),
                                  ("transmittedAt", None),
                                  ("data", None)])
+        info_dict = OrderedDict()
 
         time_format = "%Y-%m-%dT%H:%M:%SZ"
         uuid_dict = uuidict.UUIDict("um31.uuid")
@@ -200,8 +200,8 @@ class UM31:
                     for val in row[3:]:
                         val = val.split()
                         data_dict[val[0]] = round(float(val[1]), 1)
-                    data_dict["DEV"] = device
-                    data_dict["SNUM"] = serial_number
+                    info_dict.update({"DEV": device, "SNUM": serial_number, "INT_ID": int_code, "BUS": bus})
+                    data_dict.update({"info": info_dict})
                     full_dict.update({"meterUUID": uuid_dict.get_uuid(meter_description),
                                       "meterDescription": meter_description,
                                       "transmittedAt": transmitted_at,
@@ -221,7 +221,8 @@ class UM31:
                     for val in row[2:]:
                         val = val.split()
                         data_dict[val[0]] = round(float(val[1]), 1)
-                    data_dict.update({"DEV": device, "SNUM": serial_number})
+                    info_dict.update({"DEV": device, "SNUM": serial_number, "INT_ID": int_code, "BUS": bus})
+                    data_dict.update({"info": info_dict})
                     full_dict.update({"meterUUID": uuid_dict.get_uuid(meter_description),
                                       "meterDescription": meter_description,
                                       "transmittedAt": transmitted_at,
