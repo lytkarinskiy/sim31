@@ -21,7 +21,8 @@ class UM31:
                 baudrate=9600,
                 bytesize=serial.EIGHTBITS,
                 parity=serial.PARITY_NONE,
-                password='00000000', timeout=15):
+                password='00000000',
+                timeout=15):
         """Connect to UM-31 with specified serial port parameters
 
         Args:
@@ -30,6 +31,7 @@ class UM31:
             bytesize (serial):
             parity (serial):
             password (str):
+            timeout (int):
 
         """
         self.__password = password
@@ -117,6 +119,7 @@ class UM31:
     def read_ntpserver_list(self, record_num):
         return self.__execute_cmd(" RNTPSRV=" + str(record_num), "None")
 
+    # noinspection PyMethodMayBeStatic
     def _clean_data(self, data):
         """Clean output data
 
@@ -148,31 +151,27 @@ class UM31:
 
     def export_json(self, data):
 
-        def _description_string(id_block, sn_block):
+        def _parse_description(id_block, sn_block):
+            serial_number_ = sn_block.split()[1]
             meter_descr = id_block.split()[1]
             meter_descr = meter_descr.split(";")
-            serial_number = sn_block.split()[1]
-            # check dev_dict index length and append if necessary (bug in UM31 firmware)
             dev_index = format(int(meter_descr[3]), "02d")
-            # if len(dev_index) < 2:
-            #     dev_index = "0" + dev_index
-            meter_descr = self.__dev_dict[dev_index] \
-                          + ", ID=" + format(int(meter_descr[0]), "04d") \
-                          + "/" + format(int(meter_descr[1]), "04d") \
-                          + ", S/N=" + serial_number \
-                          + ", bus=" + self.__bus_dict[meter_descr[2]]
+            device_ = self.__dev_dict[dev_index]
+            int_code_ = format(int(meter_descr[0]), "04d") + "/" + format(int(meter_descr[1]), "04d")
+            bus_ = self.__bus_dict[meter_descr[2]]
+            return device_, serial_number_, int_code_, bus_
+
+        def _description_string(device_, serial_number_, int_code_, bus_):
+            meter_descr = device_ \
+                          + ", ID=" + int_code_ \
+                          + ", S/N=" + serial_number_ \
+                          + ", bus=" + bus_
             return meter_descr
 
         key, data = self._clean_data(data)
 
-        def _spec_string(id_block):
-            meter_descr = id_block.split()[1]
-            meter_descr = meter_descr.split(";")
-            dev_index = format(int(meter_descr[3]), "02d")
-            return self.__dev_dict[dev_index]
-
         json_list = []
-        data_dict = OrderedDict([("_spec", None)])
+        data_dict = OrderedDict([("_spec", "electricity_meter")])
         full_dict = OrderedDict([("meterUUID", None),
                                  ("meterDescription", None),
                                  ("transmittedAt", None),
@@ -195,13 +194,14 @@ class UM31:
                     else:
                         transmitted_at = datetime.utcnow().strftime(time_format)
                     # Format meterDescription
-                    meter_description = _description_string(row[1], row[2])
+                    device, serial_number, int_code, bus = _parse_description(row[1], row[2])
+                    meter_description = _description_string(device, serial_number, int_code, bus)
                     # Format values
                     for val in row[3:]:
                         val = val.split()
                         data_dict[val[0]] = round(float(val[1]), 1)
-
-                    data_dict.update({"_spec": _spec_string(row[1])})
+                    data_dict["DEV"] = device
+                    data_dict["SNUM"] = serial_number
                     full_dict.update({"meterUUID": uuid_dict.get_uuid(meter_description),
                                       "meterDescription": meter_description,
                                       "transmittedAt": transmitted_at,
@@ -209,19 +209,19 @@ class UM31:
                     json_list.append(json.dumps(full_dict, indent=4))
                 else:
                     pass
+
         elif key.startswith("READMONTH"):
             for row in data:
                 if len(row) > 1:
                     # Format time
                     transmitted_at = datetime.utcnow().strftime(time_format)
-                    # Format meterDescription
-                    meter_description = _description_string(row[0], row[1])
+                    device, serial_number, int_code, bus = _parse_description(row[0], row[1])
+                    meter_description = _description_string(device, serial_number, int_code, bus)
                     # Format values
                     for val in row[2:]:
                         val = val.split()
                         data_dict[val[0]] = round(float(val[1]), 1)
-
-                    data_dict.update({"_spec": _spec_string(row[0])})
+                    data_dict.update({"DEV": device, "SNUM": serial_number})
                     full_dict.update({"meterUUID": uuid_dict.get_uuid(meter_description),
                                       "meterDescription": meter_description,
                                       "transmittedAt": transmitted_at,
