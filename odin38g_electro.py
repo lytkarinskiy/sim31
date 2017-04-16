@@ -9,7 +9,6 @@ location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))
 mqtt_broker_host = "185.41.113.138"
 mqtt_client_id = "5e9c1178-a5f0-4dc0-bbbc-d74243aab27c"
 mqtt_topic = "odintcovo38g/electro"
-msg = []
 
 
 def job_function(msg_):
@@ -38,6 +37,7 @@ def job_function(msg_):
 
 
 if __name__ == '__main__':
+    msg = []
     sched = BackgroundScheduler()
     sched.add_job(lambda: job_function(msg), 'cron', minute='0,10,20,30,40,50')
     sched.start()
