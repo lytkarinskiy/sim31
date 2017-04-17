@@ -42,5 +42,5 @@ class UUIDict:
         d = self.read_dict()
         with open("export_" + self.db_name + ".csv", 'w') as f:
             for i in d:
-                f.writelines((i + ";" + d[i]))
+                f.write((i + ";" + d[i] + "\n"))
             f.close()
