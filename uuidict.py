@@ -40,7 +40,7 @@ class UUIDict:
 
     def export_dict(self):
         d = self.read_dict()
-        with open("export_" + self.db_name, 'r') as f:
+        with open("export_" + self.db_name + ".csv", 'w') as f:
             for i in d:
                 f.write(i + "," + d[i])
             f.close()
