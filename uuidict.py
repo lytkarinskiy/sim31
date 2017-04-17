@@ -37,3 +37,10 @@ class UUIDict:
             # print("Created new record", key_string, uuid_string)
             self.write_dict(self.storage)
         return uuid_string
+
+    def export_dict(self):
+        d = self.read_dict()
+        with open("export_" + self.db_name, 'r') as f:
+            for i in d:
+                f.write(i + "," + d[i])
+            f.close()
