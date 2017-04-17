@@ -11,12 +11,13 @@ mqtt_client_id = "5e9c1178-a5f0-4dc0-bbbc-d74243aab27c"
 mqtt_topic = "odintcovo38g/electro"
 
 
-def job_function(msg_):
+def job_function():
     um = um31.UM31()
     um.connect("/dev/ttyUSB0")
     data = um.read_current_values()
     um.disconnect()
 
+    msg_ = []
     payld = um.export_json(data)
     for p in payld:
         msg_.append({"topic": mqtt_topic, "payload": p})
@@ -25,21 +26,17 @@ def job_function(msg_):
     try:
         mqttc.client.connect(mqtt_broker_host, port=8883, keepalive=60)
         mqttc.client.loop_forever(retry_first_connection=True)
-    except ssl.SSLEOFError:
-        print("ssl handshake error")
+    except ssl.SSLEOFError as s:
+        print("SSLEOFError: {0}".format(s))
         pass
     except OSError as e:
         print("OS error: {0}".format(e))
         pass
-    else:
-        msg_ = []
-        print("msg_:", len(msg_))
 
 
 if __name__ == '__main__':
-    msg = []
     sched = BackgroundScheduler()
-    sched.add_job(lambda: job_function(msg), 'cron', minute='0,10,20,30,40,50')
+    sched.add_job(job_function, 'cron', minute='0,10,20,30,40,50')
     sched.start()
 
     try:
