@@ -149,6 +149,14 @@ class UM31:
         else:
             return None
 
+    def read_time(self):
+        cmd_word = "GETDATETIME"
+        cmd = self.__pack_command(cmd_word)
+        self.__connection.write(cmd)
+        time.sleep(1)
+        data = self.__connection.readline()
+        return data
+
     def export_json(self, data):
 
         def _parse_description(id_block, sn_block):
