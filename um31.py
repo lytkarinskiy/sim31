@@ -196,7 +196,8 @@ class UM31:
                     if splited_time_row[3] == "2":
                         transmitted_at = datetime.strptime(transmitted_at, "%d.%m.%Y%H:%M:%S")
                         try:
-                            h_offset = -time.localtime().tm_gmtoff
+                            # h_offset = -time.localtime().tm_gmtoff
+                            h_offset = -3
                         except:
                             h_offset = -3
                         time_delta = timedelta(hours=h_offset)
