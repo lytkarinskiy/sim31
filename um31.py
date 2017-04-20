@@ -119,6 +119,14 @@ class UM31:
     def read_ntpserver_list(self, record_num):
         return self.__execute_cmd(" RNTPSRV=" + str(record_num), "None")
 
+    def read_time(self):
+        cmd_word = "GETDATETIME"
+        cmd = self.__pack_command(cmd_word)
+        self.__connection.write(cmd)
+        time.sleep(1)
+        data = self.__connection.readline() + self.__connection.readline()
+        return data
+
     # noinspection PyMethodMayBeStatic
     def _clean_data(self, data):
         """Clean output data
@@ -148,14 +156,6 @@ class UM31:
             return inter5[0][0], inter5[2:]
         else:
             return None
-
-    def read_time(self):
-        cmd_word = "GETDATETIME"
-        cmd = self.__pack_command(cmd_word)
-        self.__connection.write(cmd)
-        time.sleep(1)
-        data = self.__connection.readline()
-        return data
 
     def export_json(self, data):
 
